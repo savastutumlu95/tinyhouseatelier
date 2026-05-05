@@ -1,6 +1,11 @@
 {
+  "version": 2,
   "cleanUrls": true,
   "trailingSlash": false,
+  "outputDirectory": ".",
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/public/media/(.*)",
