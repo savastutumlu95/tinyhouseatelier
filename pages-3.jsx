@@ -268,7 +268,21 @@ function Trust() {
         </section>
 
         <section className="section">
-          <SectionHead fig="G.05" title="Long-form reviews." meta="Verified clients · trade and private" />
+          <SectionHead fig="G.05" title="Frames in motion." meta="Atelier stockyard + truss assembly · live clips" />
+          <div className="grid-2">
+            <div className="video-embed">
+              <video src="public/media/videos/video-01.mp4" autoPlay muted loop playsInline poster="public/media/photos/img-099.jpg"></video>
+              <div className="video-embed-label">STOCK · S350GD+Z PROFILES · 0:19</div>
+            </div>
+            <div className="video-embed">
+              <video src="public/media/videos/video-02.mp4" autoPlay muted loop playsInline poster="public/media/photos/img-008.jpg"></video>
+              <div className="video-embed-label">TRUSS · LAID FOR INSPECTION · 0:43</div>
+            </div>
+          </div>
+        </section>
+
+        <section className="section">
+          <SectionHead fig="G.06" title="Long-form reviews." meta="Verified clients · trade and private" />
           <div className="grid-2">
             {DATA.reviews.map((r, i) => (
               <div key={i} className="review" style={{padding:'40px 44px'}}>
@@ -288,39 +302,161 @@ function Trust() {
 }
 
 // ============ GALLERY ============
+// Caption table for every photograph in the studio set. If a frame number is
+// not in this table the gallery falls back to a generic "Atelier · NNN" cap so
+// nothing ever appears uncaptioned.
+const GAL_CAPTIONS = {
+  1:  'WALL SAMPLE · ALU + PLASTER',
+  2:  'WALL SECTION · 1:25 ANNOTATED',
+  3:  'FRAME · TWO-STOREY · PLOT',
+  4:  'FRAME · LANDSCAPE · DAYLIGHT',
+  5:  'FRAME · OPEN AIR · TRUSSES',
+  6:  'INTERIOR · DRYWALL STAGE',
+  7:  'FAMILY LODGE · STONE BASE',
+  8:  'TRUSS · CLOSE · GALVANISED',
+  9:  'BIM · TEKLA · TWIN-GABLE',
+  10: 'BIM · ROOF · COLOUR-CODED',
+  11: 'DRAWING · KEELE · ROOF 1:50',
+  12: 'DRAWING · KEELE · WALL DETAIL',
+  13: 'DRAWING · KEELE · SECTION',
+  14: 'BATH · COMPACT · WINDOW',
+  15: 'HALL · WHITE · LONG VIEW',
+  16: 'BEDROOM · LOFT · DOUBLE',
+  17: 'GALLEY · STAINLESS · LOFT',
+  18: 'LOFT · FAMILY BERTH',
+  19: 'LOFT · ROOF · NIGHT WINDOW',
+  20: 'GLAZING · WALL · WIDE',
+  21: 'STAIR · LED INSET',
+  22: 'HALL · EMPTY · LIGHT',
+  23: 'BATH · GLASS SHOWER',
+  24: 'STAIR · STORAGE DRAWERS',
+  25: 'GALLEY · KITCHEN · WHITE',
+  26: 'VOYAGER · NIGHT · STAND',
+  27: 'GALLEY · INDUCTION · LOFT',
+  28: 'KITCHEN · ALT VIEW',
+  29: 'STAIR · LIGHT · PINE',
+  30: 'STAIR DETAIL',
+  31: 'WORKTOP · ISLAND · WIDE',
+  32: 'LIVING · GREY · LOFT ABOVE',
+  33: 'KNOB · BRASS · DOOR DETAIL',
+  34: 'WORKTOP · DARK · SINK',
+  35: 'BATH · INDUSTRIAL · DOOR OPEN',
+  36: 'LIVING · LOFT VIEW',
+  37: 'FRAME · ON CHASSIS · YARD',
+  38: 'GALLEY · LOFT · LONG',
+  39: 'EXTERIOR · LANDSCAPE',
+  40: 'EXTERIOR · DARK · SKY',
+  41: 'AERIAL · VOYAGER PAIR',
+  42: 'SIDE · PROFILE · GROUND',
+  43: 'HALL · DARK · DOOR',
+  44: 'STAIR · LOFT · LIGHT',
+  45: 'LOFT · SLEEPING',
+  46: 'HALL · LIGHT · WIDE',
+  47: 'GALLEY · LIGHT BOX',
+  48: 'HALL · WINDOW · BEDROOM',
+  49: 'BATH · INDUSTRIAL GLASS',
+  50: 'HALL · CORRIDOR',
+  51: 'BATH · INDUSTRIAL · WC',
+  52: 'STAIR · LIGHT · OPEN',
+  53: 'CLADDING · WOOD-LOOK · CLOSE',
+  54: 'TRAILER · GREEN · DARK',
+  55: 'GALLEY · BLACK SINK',
+  56: 'DOOR · INTERNAL · CLOSED',
+  57: 'LIVING · DAYLIGHT · WIDE',
+  58: 'WORKTOP · DETAIL',
+  59: 'GLAZING · DOOR · GLASS',
+  60: 'HALL · LONG · LIGHT',
+  61: 'PENTAGON WINDOW · INTERIOR',
+  62: 'STAIR · UPWARD · OAK',
+  63: 'AERIAL · TRIO · MOUNTAINS',
+  64: 'AERIAL · CLOSE · CHASSIS',
+  65: 'EXTERIOR · DAYLIGHT',
+  66: 'LIVING · GREY · CARAVAN VIEW',
+  67: 'LIVING · GREY · WIDE',
+  68: 'STAIR · LIGHT · WOOD',
+  69: 'LIVING · ALT · SECTIONAL',
+  70: 'BATH · WIDE · WC',
+  71: 'BATH · COUNTER',
+  72: 'BATH · DARK FLOOR',
+  73: 'STAIR · DRAWERS · LIGHT',
+  74: 'BEDROOM · TV · NIGHT',
+  75: 'GALLEY · STAINLESS · ISLAND',
+  76: 'BEDROOM · LIGHT',
+  77: 'BEDROOM · LONG · DUVET',
+  78: 'VORTEXVAN · DUSK · FIELD',
+  79: 'GALLEY · GREEN ACCENT',
+  80: 'HALL · BEDROOM SIDE',
+  81: 'HALL · ENTRANCE',
+  82: 'BEDROOM · ALT',
+  83: 'DOOR · INTERIOR',
+  84: 'BATH · WASHING MACHINE',
+  85: 'EMPTY · INTERIOR',
+  86: 'DOOR · ENTRANCE · OAK',
+  87: 'GALLEY · RED · ACCENT',
+  88: 'DETAIL · ATLANTE SINK',
+  89: 'GALLEY · COUNTER',
+  90: 'GALLEY · BLACK BACKSPLASH',
+  91: 'BATH · DARK · ALT',
+  92: 'GALLEY · WORKTOP · LIGHT',
+  93: 'LIVING · PENTAGON',
+  94: 'GALLEY · RED · WIDE',
+  95: 'EMPTY · LONG VIEW',
+  96: 'GALLEY · INTERIOR · BRIGHT',
+  97: 'BATH · COUNTER · ALT',
+  98: 'GALLEY · DETAIL',
+  99: 'STOCKYARD · MATERIALS',
+  100: 'VORTEX VAN · WORKSHOP',
+  101: 'BATH · WHITE · WIDE',
+  102: 'EXTERIOR · CABIN · YARD',
+  103: 'VORTEX VAN · SIGN CLOSE',
+  104: 'KURTSAN · TWIN BUILD',
+  105: 'BATH · DETAIL',
+  106: 'BATH · TILED · WIDE',
+  107: 'HALL · SOFT LIGHT',
+  108: 'FRAME · OUTDOOR',
+  109: 'FRAME · FIELD · LONG',
+  110: 'FRAME · PLAN STAGE',
+  111: 'FRAME · OUTDOOR · CLOSE',
+  112: 'FRAME · OUTDOOR · WIDE',
+  113: 'FRAME · DETAIL · CONNECTION',
+  114: 'ATELIER · TÜRKOĞLU · AERIAL',
+  115: 'FRAME · TWIN-GABLE LODGE',
+  116: 'PAVILION · A-FRAME RETREAT',
+  117: 'PAVILION · POOL · COMMISSION',
+  118: 'PAVILION · GARDEN SIDE',
+  119: 'PAVILION · STEPS · APPROACH',
+  120: 'PAVILION · DUSK',
+  121: 'FRAME · OUTDOOR · WIDE',
+};
+const galCap = (n) => GAL_CAPTIONS[n] || `ATELIER · ${String(n).padStart(3,'0')}`;
+// "wide" is a 2-col span, "tall" a 2-row span, "wide tall" a feature tile.
+// Sprinkle them across the masonry so the grid never looks gridded.
+const GAL_FEATURE = { 7: 'wide tall', 26: 'tall', 41: 'wide', 63: 'wide', 78: 'tall', 100: 'wide', 104: 'wide tall', 115: 'wide', 117: 'wide', 120: 'wide', 9: 'tall', 27: 'tall', 49: 'tall', 66: 'wide', 18: 'tall', 21: 'tall', 53: 'tall', 88: 'tall', 114: 'wide', 16: 'tall', 38: 'wide', 35: 'tall', 79: 'wide', 99: 'wide', 11: 'wide' };
 function Gallery() {
-  const layout = [
-    {c:'wide tall', img:'public/media/photos/img-041.jpg', cap:'VOYAGER · MUĞLA · 2026'},
-    {c:'', img:'public/media/photos/img-037.jpg', cap:'FRAME · TANDEM CHASSIS'},
-    {c:'', img:'public/media/photos/img-088.jpg', cap:'DETAIL · ATLANTE SINK'},
-    {c:'tall', img:'public/media/serenity/page-06.jpg', cap:'SERENITY · LOFT VIEW'},
-    {c:'wide', img:'public/media/photos/img-063.jpg', cap:'AERIAL · VOYAGER PAIR'},
-    {c:'', img:'public/media/photos/img-002.jpg', cap:'WALL SECTION · 1:25'},
-    {c:'', img:'public/media/photos/img-021.jpg', cap:'STAIR · LED INSET'},
-    {c:'wide', img:'public/media/photos/img-104.jpg', cap:'KURTSAN · TWIN BUILD'},
-    {c:'tall', img:'public/media/aframe/page-01.jpg', cap:'AURORA · A-FRAME · ¾'},
-    {c:'', img:'public/media/photos/img-026.jpg', cap:'NIGHT · STANDING SEAM'},
-    {c:'', img:'public/media/photos/img-114.jpg', cap:'ATELIER · TÜRKOĞLU'},
-    {c:'wide', img:'public/media/photos/img-117.jpg', cap:'PAVILION · POOL COMMISSION'},
-    {c:'', img:'public/media/photos/img-009.jpg', cap:'BIM · TEKLA MODEL'},
-    {c:'tall', img:'public/media/photos/img-027.jpg', cap:'KITCHEN · INDUCTION'},
-    {c:'', img:'public/media/photos/img-049.jpg', cap:'BATH · INDUSTRIAL GLASS'},
-    {c:'', img:'public/media/photos/img-018.jpg', cap:'LOFT · FAMILY BERTH'},
-    {c:'wide', img:'public/media/photos/img-115.jpg', cap:'FRAME · TWIN-GABLE LODGE'},
-    {c:'', img:'public/media/photos/img-066.jpg', cap:'LIVING · GREY SECTIONAL'},
-    {c:'', img:'public/media/photos/img-100.jpg', cap:'VORTEX · WORKSHOP'},
-    {c:'wide tall', img:'public/media/photos/img-078.jpg', cap:'DUSK · IN THE FIELD'},
-  ];
+  const photos = [];
+  for (let n = 1; n <= 121; n++) {
+    photos.push({ n, img: `public/media/photos/img-${String(n).padStart(3, '0')}.jpg`, cap: galCap(n), c: GAL_FEATURE[n] || '' });
+  }
+  // append the rendered PDF pages so every PDF page is also visible
+  for (let p = 1; p <= 10; p++) {
+    photos.push({ n: 1000+p, img: `public/media/serenity/page-${String(p).padStart(2, '0')}.jpg`, cap: `SERENITY · BOOK PAGE ${p}`, c: '' });
+  }
+  for (let p = 1; p <= 12; p++) {
+    photos.push({ n: 2000+p, img: `public/media/aframe/page-${String(p).padStart(2, '0')}.jpg`, cap: `AURORA · BOOK PAGE ${p}`, c: '' });
+  }
+  for (let p = 1; p <= 41; p++) {
+    photos.push({ n: 3000+p, img: `public/media/callisto/page-${String(p).padStart(2, '0')}.jpg`, cap: `CALLISTO · PLATE ${p}`, c: p === 1 ? 'wide' : '' });
+  }
   return (
     <>
       <Crumb items={[{label:'Atelier', href:'#/'}, {label:'Gallery'}]} />
       <div className="container">
-        <SectionHead fig="H.01" title="Project gallery." meta={`${layout.length} frames · 6 models · UK + EU delivery`} />
+        <SectionHead fig="H.01" title="Project gallery." meta={`${photos.length} frames · 6 models · UK + EU delivery`} />
         <div className="gallery" style={{paddingBottom:96}}>
-          {layout.map((l, i) => (
-            <div key={i} className={`gal ${l.c}`}>
-              <img src={l.img} alt={l.cap} loading="lazy" />
-              <span className="gal-cap">{l.cap}</span>
+          {photos.map((p) => (
+            <div key={p.n} className={`gal ${p.c}`}>
+              <img src={p.img} alt={p.cap} loading="lazy" />
+              <span className="gal-cap">{p.cap}</span>
             </div>
           ))}
         </div>

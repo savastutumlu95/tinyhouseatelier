@@ -68,7 +68,7 @@ function Home() {
         <div className="container">
           <SectionHead fig="02" title="The collection." meta={`${DATA.tinyHouses.length} models · build slots from Q3`} />
           <div className="grid-3">
-            {DATA.tinyHouses.slice(0, 6).map(t => (
+            {DATA.tinyHouses.map(t => (
               <a key={t.id} href={`#/tiny-houses/${t.id}`} className="card">
                 <div className="card-img">
                   <img src={t.hero} alt={`${t.name} — ${t.sub}`} loading="lazy" />

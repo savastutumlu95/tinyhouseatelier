@@ -96,6 +96,7 @@ function Footer() {
             <ul>
               <li><a href="#/tiny-houses">All Models</a></li>
               <li><a href="#/tiny-houses/th-serenity">Serenity</a></li>
+              <li><a href="#/tiny-houses/th-callisto">Callisto 10</a></li>
               <li><a href="#/tiny-houses/th-aurora">Aurora A-Frame</a></li>
               <li><a href="#/tiny-houses/th-voyager">Voyager</a></li>
               <li><a href="#/compare">Compare vs UK</a></li>
