@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tinyhouse Atelier — Steel-framed dwellings, drawn to the millimetre</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="data.js"></script>
+<script type="text/babel" src="components.jsx"></script>
+<script type="text/babel" src="pages-1.jsx"></script>
+<script type="text/babel" src="pages-2.jsx"></script>
+<script type="text/babel" src="pages-3.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useMemo } = React;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "displayFont": "Cormorant Garamond",
+  "bodyFont": "Inter",
+  "monoFont": "JetBrains Mono"
+}/*EDITMODE-END*/;
+
+function App() {
+  const [route, setRoute] = useState(window.location.hash || '#/');
+  const [currency, setCurrency] = useState('GBP');
+  const [cart, setCart] = useState([]);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [toast, setToast] = useState('');
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  useEffect(() => {
+    const r = document.documentElement;
+    r.style.setProperty('--font-display', `"${tweaks.displayFont}", Georgia, serif`);
+    r.style.setProperty('--font-body', `"${tweaks.bodyFont}", -apple-system, sans-serif`);
+    r.style.setProperty('--font-mono', `"${tweaks.monoFont}", ui-monospace, monospace`);
+  }, [tweaks]);
+
+  useEffect(() => {
+    const handler = () => { setRoute(window.location.hash || '#/'); window.scrollTo(0, 0); };
+    window.addEventListener('hashchange', handler);
+    return () => window.removeEventListener('hashchange', handler);
+  }, []);
+
+  const addToCart = (item) => {
+    setCart(c => [...c, item]);
+    setToast(`Added — ${item.name}`);
+    setTimeout(() => setToast(''), 1800);
+  };
+  const removeFromCart = (idx) => setCart(c => c.filter((_, i) => i !== idx));
+  const openCart = () => setCartOpen(true);
+  const closeCart = () => setCartOpen(false);
+
+  // route resolver
+  const path = route.replace(/^#/, '') || '/';
+  let page;
+  if (path === '/' || path === '') page = <Home />;
+  else if (path === '/tiny-houses') page = <TinyHousesList />;
+  else if (path.startsWith('/tiny-houses/')) page = <TinyHousePDP id={path.split('/')[2]} />;
+  else if (path === '/materials') page = <MaterialsList />;
+  else if (path.startsWith('/materials/')) page = <MaterialPDP id={path.split('/')[2]} />;
+  else if (path === '/quote') page = <Quote />;
+  else if (path === '/trade') page = <TradeLogin />;
+  else if (path === '/compare') page = <Compare />;
+  else if (path === '/trust') page = <Trust />;
+  else if (path === '/gallery') page = <Gallery />;
+  else if (path === '/guidance') page = <Trust />;
+  else page = <Home />;
+
+  return (
+    <AppCtx.Provider value={{ route: path, currency, setCurrency, cart, addToCart, removeFromCart, cartOpen, openCart, closeCart }}>
+      <ViewportFrame />
+      <Nav />
+      <main className="page">{page}</main>
+      <Footer />
+      <CartDrawer />
+      <Toast msg={toast} />
+
+      <TweaksPanel title="Typography pairing">
+        <TweakSection title="Display (headings)">
+          <TweakRadio
+            value={tweaks.displayFont}
+            onChange={(v) => setTweak('displayFont', v)}
+            options={[
+              { value: 'Cormorant Garamond', label: 'Cormorant' },
+              { value: 'EB Garamond', label: 'EB Garamond' },
+              { value: 'Playfair Display', label: 'Playfair' },
+            ]}
+          />
+        </TweakSection>
+        <TweakSection title="Body (UI)">
+          <TweakRadio
+            value={tweaks.bodyFont}
+            onChange={(v) => setTweak('bodyFont', v)}
+            options={[
+              { value: 'Inter', label: 'Inter' },
+              { value: 'Space Grotesk', label: 'Grotesk' },
+            ]}
+          />
+        </TweakSection>
+        <TweakSection title="Mono (specs)">
+          <TweakRadio
+            value={tweaks.monoFont}
+            onChange={(v) => setTweak('monoFont', v)}
+            options={[
+              { value: 'JetBrains Mono', label: 'JetBrains' },
+              { value: 'IBM Plex Mono', label: 'IBM Plex' },
+            ]}
+          />
+        </TweakSection>
+      </TweaksPanel>
+    </AppCtx.Provider>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
+</body>
+</html>
